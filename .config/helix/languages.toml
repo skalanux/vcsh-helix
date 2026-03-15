@@ -1,0 +1,94 @@
+#[[language]]
+#name = "python"
+#language-servers = [ "pyright", "ruff" ]
+#auto-format = true
+#
+#[language-server.pyright-langserver]
+#command = "pyright-langserver"
+#args = ["--stdio"]
+
+#[language-server.ruff]
+#command = "ruff"
+#args = ["server"]
+
+[[language]]
+name = "python"
+language-id = "python"
+roots = ["pyproject.toml", "poetry.lock", ".git", ".venv/"]
+language-servers = ["ruff", "basedpyright"]
+formatter = { command = "sh", args = [
+  "-c",
+  "uvx ruff check --fix - | uvx ruff format -",
+] }
+file-types = ["py", "ipynb"]
+comment-token = "#"
+shebangs = ["python"]
+auto-format = true
+
+[language-server.ruff]
+command = "uvx"
+args = ["ruff", "server"]
+environment = { "RUFF_TRACE" = "messages" }
+
+[language-server.ruff.config.settings]
+lineLength = 100
+logLevel = "debug"
+fix = true
+
+[language-server.ruff.config.settings.lint]
+select = [
+  "E",     # errores de pycodestyle
+  "W",     # advertencias de pycodestyle
+  "F",     # pyflakes
+  "B",     # flake8-bugbear
+  "I",     # isort
+  "RUF",   # ruff
+  "D",     # docstrings
+  "UP",    # pyupgrade
+  "ANN",   # anotaciones
+  "ASYNC", # chequeos asíncronos
+  "S",     # bandit (seguridad)
+  "YTT",   # chequeos de fechas y horas
+  "A",     # sombreamiento de builtins
+  "RET",   # sentencias return
+  "TCH",   # chequeo de tipos
+  "ARG",   # argumentos de funciones
+  "PTH",   # pathlib sobre os.path
+  "ERA",   # suposiciones de entorno
+  "LOG",   # prácticas de logging
+  "N",     # nombres
+  "C4",    # comprensiones
+  "T10",   # uso del debugger
+  "SIM",   # simplificar código
+  "TRY",   # try/except
+  "C90",   # complejidad
+  "PGH",   # hooks de patrones
+]
+ignore = [
+  "E501", # línea demasiado larga
+  "E731", # no asignar lambda
+  "D205", # espaciado de línea en blanco en docstrings
+  "D100", # falta docstring en módulo público    
+  "D104", # falta docstring en paquete público
+]
+
+[tool.ruff.lint.per-file-ignores]
+"src/tests/*" = ["S101", "D103"] # permitir aserciones, permitir docstrings faltantes
+
+[language-server.ruff.config.settings.format]
+quote-style = "double"
+docstring-code-format = true
+indent-style = "space"
+
+[language-server.basedpyright]
+command = "uvx"
+args = ["--from", "basedpyright", "basedpyright-langserver", "--stdio"]
+
+[language-server.basedpyright.config]
+python.pythonPath = ".venv/bin/python"
+
+[language-server.basedpyright.config.basedpyright.analysis]
+autoSearchPaths = true
+typeCheckingMode = "basic"
+diagnosticMode = "openFilesOnly"
+autoImportCompletions = true
