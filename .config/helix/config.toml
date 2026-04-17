@@ -14,7 +14,7 @@ hidden = false
 
 [keys.normal]
 "C-s" = ":w"
-"C-z" = "undo" # Ctrl + z para deshacer
+"C-z" = "undo"
 
 [keys.insert]
 "C-z" = "undo"
